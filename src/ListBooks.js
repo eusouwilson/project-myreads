@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
-import './App.css'
+import PropTypes from 'prop-types';
+import escapeRegExp from 'escape-string-regexp';
+import sortBy from 'sort-by';
+import './App.css';
 
  
 
@@ -15,6 +15,9 @@ class ListBooks extends Component {
     state = {
         query: ''
     }
+    updateQuery = (query) => {
+        this.setState({ query: query.trim() })
+    } 
 
     render() {
         const { books } = this.props
@@ -27,8 +30,7 @@ class ListBooks extends Component {
         } else {
             showingBooks = books
         }
-        showingBooks.sort(sortBy('name'))
-        
+
         return(
             <ol className="books-grid">
             {showingBooks.map((book)=>
