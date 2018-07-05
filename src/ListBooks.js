@@ -1,10 +1,9 @@
-import React,{Component} from 'react'
+import React from 'react'
 import BookShelf from "./BookShelf"
 import {Link} from "react-router-dom"
 
-class ListBooks extends Component{
+const ListBooks = ({books, updateBookInfo}) => {
 
-  render() {
     return (
         <div className="list-books">
           <div className="list-books-title">
@@ -12,9 +11,9 @@ class ListBooks extends Component{
           </div>
           <div className="list-books-content">
             <div>
-              <BookShelf books={this.props.books} distinc="currentlyReading" updateBookInfo={this.props.updateBookInfo}/>
-              <BookShelf books={this.props.books} distinc="wantToRead" updateBookInfo={this.props.updateBookInfo}/>
-              <BookShelf books={this.props.books} distinc="read" updateBookInfo={this.props.updateBookInfo}/>
+              <BookShelf books={books} distinc="currentlyReading" updateBookInfo={updateBookInfo}/>
+              <BookShelf books={books} distinc="wantToRead" updateBookInfo={updateBookInfo}/>
+              <BookShelf books={books} distinc="read" updateBookInfo={updateBookInfo}/>
             </div>
           </div>
 
@@ -24,5 +23,5 @@ class ListBooks extends Component{
         </div>
     )
   }
-}
+
 export default ListBooks

@@ -1,18 +1,31 @@
 
-import React,{Component}from 'react'
+import React from 'react'
 import Book from './Book'
+const shelf = [
+  {
+    "id": "currentlyReading",
+    "title": "Currently Reading"
+  },
+  {
+   "id": "wantToRead",
+   "title": "Want To Read"
+ },
+ {
+   "id": "read",
+   "title": "Read"
+ }
+]
+const BookShelf = ({books, distinc, updateBookInfo}) => {
 
-class BookShelf extends Component {
-
-  render() {
     return (
       <div className="bookshelf">
-        <h2 className="bookshelf-title">{this.props.distinc}</h2>
+      {shelf.filter((x)=>x.id === distinc).map((shelf) => 
+        <h2 className="bookshelf-title"  key={shelf.id} >{shelf.title}</h2>)}
         <div className="bookshelf-books">
           <ol className="books-grid">
-            {this.props.books.map(book => (
-              book.shelf === this.props.distinc &&(
-                <Book key={book.id} book={book} updateBookInfo={this.props.updateBookInfo}/>
+            {books.map(book => (
+              book.shelf === distinc &&(
+                <Book key={book.id} book={book} updateBookInfo={updateBookInfo}/>
               )))
             }
             </ol>
@@ -21,5 +34,5 @@ class BookShelf extends Component {
 
     )
   }
-}
+
 export default BookShelf
