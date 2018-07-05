@@ -98,7 +98,12 @@ body, .app {
   background-size: 28px;
   font-size: 0;
 }
-
+.search-numbers {
+  margin-top: 50px;
+  padding: 10px 0;
+  background: #2e7c31;
+  text-align: center;
+}
 .search-books-results {
   padding: 80px 10px 20px;
 }
@@ -139,7 +144,15 @@ body, .app {
   display: flex;
   align-items: flex-end;
 }
+.book-shelf-rating {
+  position: absolute;
+  padding: 0 0 0 5px;
+  right: 0;
+  bottom: -70px;
+  width: 100px;
+  height: 20px;
 
+}
 .book-shelf-changer {
   position: absolute;
   right: 0;

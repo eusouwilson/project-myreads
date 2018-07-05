@@ -1,79 +1,77 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
-import './App.css'
-import ListBooks from './ListBooks';
-import * as BooksAPI from './BooksAPI';
+import React,{Component} from 'react'
+import * as BooksAPI from "./BooksAPI";
+import Book from './Book'
+import {Link} from "react-router-dom"
+import escapeRegExp from 'escape-string-regexp';
 
+class SearchBook extends Component{
+  state = {
+    books:[],
+    searchingBooks:[],
+    query:'',
+  }
 
- 
-
-class SearchBooks extends Component {
-    static prototypes = {
-        books: PropTypes.array.isRequired,
-    
-    }
-    state = {
-        query: '',
-        showingBooks:[]
-    }
-    clearQuery = () =>{
-        this.setState({ showingBooks: ''})
-    }
-    updateQuery = (query) => {
-        this.setState({ query: query })
-    } 
-    componentWillUnmount() {
-        this.setState({ showingBooks: '', query:''})
-    }
-    
-    render() {
-        const { query } = this.state
-        if (query) {
-            BooksAPI.search(query).then((books) => {
-             this.setState({books})
-            books.length ? this.showingBooks = books : this.showingBooks = []
-        })
-        } else {
-            this.showingBooks = []
+  searchingBooks = {}
+  bookQuery = (e) => {
+    const match = new RegExp(escapeRegExp(e.target.value),'i')
+    if(match.test(e.target.value)) {
+      this.setState({query:e.target.value})
+      BooksAPI.search(e.target.value).then(searchingBooks => {
+        if(Array.isArray(searchingBooks)) {
+          this.searchingBooks = searchingBooks
+          if (this.searchingBooks !== undefined && this.searchingBooks instanceof Array) {
+            for(const searchingBook of this.searchingBooks){
+              let flag = 0
+              for(const book of this.state.books){
+                if (searchingBook.id === book.id) {
+                  searchingBook.shelf = book.shelf
+                  flag = 1
+                }
+              }
+              if(flag === 0){
+                searchingBook.shelf = 'none'
+              }
+            }
+            this.setState({
+              searchingBooks:this.searchingBooks
+            })
+          }
+        }else {
+          this.setState({searchingBooks:[]})
         }
-        return(
-            <div className="search-books">
-            <div className="search-books-bar">
-            <Link className ="close-search" to="/">Close</Link>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
+      })
+    }
+  }
 
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input 
-                type="text" 
-                placeholder="Search by title or author"
-                value={query}
-               onChange={(event) => this.updateQuery(event.target.value)}
-                />
+  componentDidMount(){
+    BooksAPI.getAll().then(books =>{
+      this.setState({books})
+    })
+    this.searchingBooks = this.state.searchingBooks
+  }
+  render() {
 
-              </div>
-            </div>
-            <div className="search-books-results" >
-            {this.showingBooks.length === 0 && (
-                <span>No results</span>
-
-                   )}
-             <ListBooks
-                 books={this.showingBooks} 
-             />
-         
-            
-            </div>
+    return(
+      <div className="search-books">
+        <div className="search-books-bar">
+          <Link to="/" className="close-search">Close</Link>
+          <div className="search-books-input-wrapper">
+            <input type="text" placeholder="Search by title or author" onChange={this.bookQuery}/>
           </div>
-        )
+        </div>
+        <div  className="search-numbers">
+        {this.state.searchingBooks.length !==0 ? <h1>books found: {this.state.searchingBooks.length}</h1>
+        : <h1>No result</h1>}
+        </div>
+        <div className="search-books-results">
+          <ol className="books-grid">
+            {this.state.searchingBooks.map(searchingBook => (
+              <Book key={searchingBook.id} book={searchingBook} updateBookInfo={this.props.updateBookInfo} />
+            ))}
+          </ol>
+        
+        </div>
+      </div>)
     }
 }
-export default SearchBooks;
+export default SearchBook
